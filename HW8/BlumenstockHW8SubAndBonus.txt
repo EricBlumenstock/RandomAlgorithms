@@ -1,0 +1,196 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+
+namespace StringMatching
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+
+            Console.Write("Enter Text: ");
+            string t = Console.ReadLine();
+
+            Console.Write("\nEnter Pattern: ");
+            string p = Console.ReadLine();
+
+
+
+
+            int n = t.Length; // length of text
+            int m = p.Length; // length of pattern
+            int[] pi = new int[p.Length]; // pi array
+            int k = 0; // beginning of pattern currently matching
+            int q = 1;  // location in pattern array
+
+
+
+
+
+
+
+            //Compute pi array
+            while (q < m)
+            {
+                if (k == 0 && p[k] != p[q]) // If we didn't find a match set pi to 0
+                {
+                    pi[q] = 0;
+                    q++;
+                }
+                else if (p[k] == p[q]) // if we found a match
+                {
+                    k++;
+                    pi[q] = k;
+                    q++;
+                }
+                else // we've repeated a previously found match
+                {
+                    k = pi[k - 1];
+                }
+            }
+
+
+
+
+
+
+            //Used piCopy to try and follow slides -- start pi at 1
+            List<int> piCopy = new List<int>();
+            piCopy.Add(0); // Add an empty location for use in pattern matching
+
+
+            for (int i = 0; i < pi.Length; i++)
+            {
+                Console.Write(pi[i] + " ");
+                piCopy.Add(pi[i]); // copy pi
+            }
+
+            Console.WriteLine("\n");
+            
+            
+            
+            
+            
+            
+            // subtract one to represent the last letter being the end of the array
+            //m--; // and due to q starting at zero instead of 1 -- array of length 7 needs location 0 plus 5 more for 6 locations total
+            //reset q for KMP matcher
+            q = 0; //# characters matched
+            bool reset = false; // for when we reset don't show "No Match" due to the reset
+            
+            for (int i = 0; i < n; i++) // scan text left to right
+            {
+                if (p[q] != t[i] && reset == false)
+                {
+                    Console.WriteLine("No Match");
+                }
+                reset = false;
+
+
+                while (q > 0 && p[q] != t[i]) //when character does not match we reset using pi
+                {
+                    q = piCopy[q]; 
+                }
+                if ( p[q] == t[i]) // there is a match
+                {
+                    Console.WriteLine("Match with q= " + q);
+
+                    for (int j = 0; j <= q; j++) //Display match
+                    {
+                        Console.Write(p[j]);
+                    }
+                     Console.WriteLine("");
+
+                    if (q+1 <= m) // prevent argument out of range exception // could've changed next if statement instead
+                        q = q + 1; // no shift
+                }
+                if (q == m) // when the entire patttern has been matched
+                {
+                    Console.WriteLine("PATTERN OCCURS");
+
+                    q = piCopy[q]; // look for next match
+                    reset = true; // we reset due to a match
+                }
+                
+            }//end for
+
+            Console.WriteLine("");
+
+
+
+
+
+            //
+            //
+            // The following is a copy of the above but with highlighting for the bonus
+            //
+            //
+            //
+
+
+
+
+
+
+
+            //reset q for KMP matcher
+            q = 0; //# characters matched
+
+            for (int i = 0; i < n; i++) // scan text left to right
+            {
+                //Rewrite T and move cursor to P-start               
+                Console.Write("\r");
+                Console.Write(t);
+                Console.SetCursorPosition(i-q, Console.CursorTop);
+            
+                while (q > 0 && p[q] != t[i]) //when character does not match we reset using pi
+                {
+                    q = piCopy[q];
+                }
+
+
+
+                if (p[q] == t[i]) // there is a match
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    for (int j = 0; j <= q; j++) //Display match
+                    {
+                        Console.Write(p[j]);
+                    }
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    System.Threading.Thread.Sleep(1500);
+                   
+                    if (q + 1 <= m) // prevent argument out of range exception // could've changed next if statement instead
+                        q = q + 1; // no shift
+                }
+                
+
+
+                if (q == m) // when the entire patttern has been matched
+                {
+                   q = piCopy[q]; // look for next match
+                }
+
+            }//end for
+
+
+
+
+
+
+
+
+
+
+
+            Console.ReadLine();
+            
+        }
+    }
+
+}

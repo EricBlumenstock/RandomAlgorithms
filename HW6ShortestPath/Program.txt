@@ -1,0 +1,210 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Dijkstra
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int s = 1;                                        //number of tests
+            int n = 0;                                        //number of cities
+            List<string> names = new List<string>();          //city names
+
+            List<int> p = new List<int>();                    //number of neighbors of city 
+            List<List<int>> nr = new List<List<int>>();       //neighbor index and cost for city corresponding to nr index to p index
+            List<int> temp;
+
+            int r = 0;                                        //number of paths to find
+            List<List<int>> cityPaths = new List<List<int>>();// cities to find paths to row is paths, column has path indicies
+            List<int> outputCost = new List<int>();           //row of costs for city paths
+
+
+
+
+
+
+            while (s >= 1) // while we want to do tests
+            {
+                //input
+
+
+
+                Console.WriteLine("Input:");
+                Console.Write("Number of Tests: ");
+                s = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Number of Cities: ");
+                n = Convert.ToInt32(Console.ReadLine());
+
+                
+                for (int i = 0; i < n; i++) // do this for each city
+                {
+                    Console.Write("Name of City " + i + ": ");
+                    names.Add(Console.ReadLine());
+
+                    Console.Write("Number of Neighbors: ");
+                    p.Add(Convert.ToInt32(Console.ReadLine()));
+
+                    temp = new List<int>();
+                    for (int j = 0; j < p[i] * 2; j += 2) // for each neighbor we need index and cost
+                    {
+                        
+                        Console.Write("Neighbor index: ");
+                        temp.Add(Convert.ToInt32(Console.ReadLine()));
+                        //nr[i][j] = Convert.ToInt32(Console.ReadLine());
+
+                        Console.Write("Cost to get to Neighbor : ");
+                        temp.Add(Convert.ToInt32(Console.ReadLine()));
+                        //nr[i][j + 1] = Convert.ToInt32(Console.ReadLine());
+
+                        
+                    }
+                    nr.Add(temp);
+                }
+
+                Console.Write("Number of paths to find: ");
+                r = Convert.ToInt32(Console.ReadLine());
+
+                for (int i = 0; i < r; i++) // for each path we need city to city indexes
+                {
+                    temp = new List<int>();
+                    Console.Write("Enter Path " + i + " index start: ");
+                    temp.Add(Convert.ToInt32(Console.ReadLine()));
+                    //cityPaths[i][0] = Convert.ToInt32(Console.ReadLine());
+
+                    Console.Write("Enter Path " + i + " index end: ");
+                    temp.Add(Convert.ToInt32(Console.ReadLine()));
+                    //cityPaths[i][1] = Convert.ToInt32(Console.ReadLine());
+
+                    cityPaths.Add(temp);
+
+                }
+
+
+
+
+
+
+
+
+                //compute
+                for (int i = 0; i < cityPaths.Count; i++) // for each path do
+                {
+                    int source = cityPaths[i][0];
+                    int destination = cityPaths[i][1];
+                    int neighborIndex = 0;
+                    int minNeighborCost = int.MaxValue;
+                    int minNeighborIndex = 0;
+                    List<int> ignoreNeighbors = new List<int>();
+                    bool found = false;
+                    int runningTotal = 0;
+                    bool deadEnd = false;
+
+                    //branch remembering
+                    List<int> possibleNode = new List<int>();
+                    List<int> runningTotalList = new List<int>();
+                    List<List<int>> rememberedIgnore = new List<List<int>>();
+
+
+                    while (!found)
+                    {
+                        for (int j = 0; j < p[source]; j += 2)//for each neighbor find min neighbor index and cost
+                        {
+                            while(j < nr[source].Count && ignoreNeighbors.Contains(nr[source][j])) // while its an old node we've been to increment
+                            {
+                                j += 2;
+                            }
+
+                            if (j < nr[source].Count)
+                            {
+                                neighborIndex = nr[source][j];
+
+                                if (nr[source][j + 1] < minNeighborCost)
+                                {
+                                    minNeighborCost = nr[source][j + 1];
+                                    minNeighborIndex = neighborIndex;
+                                }
+                                else if (nr[source][j + 1] == minNeighborCost) //branch
+                                {
+                                    possibleNode.Add(neighborIndex);
+                                    runningTotalList.Add(runningTotal+minNeighborCost);
+                                    rememberedIgnore.Add(ignoreNeighbors);
+
+                                }
+                            }
+                            else //dead end
+                            {
+                                deadEnd = true;
+                                ignoreNeighbors.Add(source);
+                                source = ignoreNeighbors[ignoreNeighbors.Count - 2];
+                                ignoreNeighbors.RemoveAt(ignoreNeighbors.Count - 2);
+
+                            }
+                           
+
+                        }//for
+
+                        if (deadEnd)
+                        {
+                            //do nothing
+                        }
+                        else
+                        {
+                            ignoreNeighbors.Add(source);//ignore looking at old nodes again
+                            source = minNeighborIndex; // set smallest to new source
+                            runningTotal += minNeighborCost;
+                            minNeighborCost = int.MaxValue;
+
+                            if (minNeighborIndex == destination && possibleNode.Count == 0)
+                            {
+                                found = true;
+                                outputCost.Add(runningTotal);
+                            }
+                            else if (possibleNode.Count > 0) // we had a branch, restore state
+                            {
+                                source = possibleNode[0];
+                                runningTotal = runningTotalList[0];
+                                ignoreNeighbors = rememberedIgnore[0];
+                                possibleNode.RemoveAt(0);
+                                runningTotalList.RemoveAt(0);
+                                rememberedIgnore.RemoveAt(0);
+                            }
+                        }
+
+
+                        s--;
+                    }//while
+                    
+
+                   
+                }
+
+
+
+
+
+
+
+
+                Console.WriteLine("\n\n");
+
+
+                //output
+                for (int i = 0; i < r; i++)
+                {
+                    Console.WriteLine(outputCost[i]);
+                }
+                Console.ReadLine();
+                Console.ReadLine();
+                Console.ReadLine();
+            }//while
+
+
+
+         }//main
+        
+     }
+}

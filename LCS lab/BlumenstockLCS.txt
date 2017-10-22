@@ -1,0 +1,147 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LCS
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Enter two strings: \n");
+            Console.WriteLine(LCS(Console.ReadLine(), Console.ReadLine()));
+            Console.ReadLine();
+        }
+
+        static string LCS(string s, string t)
+        {
+            string result = "";
+            List<List<int>> numTable = new List<List<int>>();
+            List<List<string>> direcTable = new List<List<string>>();
+
+
+            for (int i = 0; i <= s.Length; i++)
+            {
+                List<int> temp = new List<int>();
+                List<string> tempStr = new List<string>();
+                for (int j = 0; j <= t.Length; j++)
+                {
+
+                    temp.Add(0);
+
+                    tempStr.Add(" ");
+
+                }
+                numTable.Add(temp);
+                direcTable.Add(tempStr);
+            }
+
+
+
+
+
+
+
+            for (int i = 1; i <= s.Length; i++)
+            {
+                for (int j = 1; j <= t.Length; j++)
+                {
+                    if (s[i - 1].Equals(t[j - 1]))
+                    {
+                        numTable[i][j] = numTable[i - 1][j - 1] + 1;
+                        direcTable[i][j] = "d";
+                    }
+                    else if (numTable[i][j - 1] > numTable[i - 1][j])
+                    {
+                        numTable[i][j] = numTable[i][j - 1];
+                        direcTable[i][j] = "<";
+                    }
+                    else
+                    {
+                        numTable[i][j] = numTable[i - 1][j];
+                        direcTable[i][j] = "^";
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+            Console.WriteLine("  " + t);
+            char[] charArr = s.ToCharArray();
+            for (int i = 0; i <= charArr.Length; i++)
+            {
+                if (i >= 1)
+                    Console.Write(charArr[i - 1]);
+                for (int j = 0; j <= t.Length; j++)
+                {
+                    Console.Write(numTable[i][j]);
+                }
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("\n\n\n");
+
+            Console.WriteLine("  " + t);
+            for (int i = 0; i <= charArr.Length; i++)
+            {
+                if (i >= 1)
+                    Console.Write(charArr[i - 1]);
+                for (int j = 0; j <= t.Length; j++)
+                {
+                    Console.Write(direcTable[i][j]);
+                }
+                Console.WriteLine();
+            }
+
+
+
+
+
+
+
+            bool isFound = true;
+            int rowDec = 1;
+            int colDec = 1;
+            string LCS = "";
+            while (isFound)
+            {
+                if(direcTable[direcTable.Count - colDec][direcTable[0].Count - rowDec] == "d")
+                {
+                    LCS = LCS + t[direcTable[0].Count - 1 - rowDec]; //t row character
+                    rowDec++;
+                    colDec++;                    
+                }
+                else if (direcTable[direcTable.Count - colDec][direcTable[0].Count - rowDec] == "^")
+                {
+                    colDec++;
+                }
+                else if (direcTable[direcTable.Count - colDec][direcTable[0].Count - rowDec] == "<")
+                {
+                    rowDec++;
+                }
+                if (direcTable.Count - colDec <= 0)
+                {
+                    isFound = false;
+                }
+
+            }
+
+
+            for (int i = LCS.Length-1; i >= 0; i--)
+            {
+                result += LCS[i];
+            }
+            
+
+
+            return result;
+        }
+    }
+}

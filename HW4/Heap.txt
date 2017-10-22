@@ -1,0 +1,97 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HW4
+{
+    class Heap
+    {
+        private int max_size;
+        private int size;
+
+        private string[] h;
+
+        public Heap(int userSize)
+        {
+            size = 0;
+            max_size = userSize + 2; // Not using end or beginning location
+            h = new string[max_size];
+        }
+
+        public void print()
+        {
+            for (int i = 1; i < max_size - 1; i++)
+            {
+                Console.Write(h[i]);
+            }
+            Console.WriteLine("\n");
+        }
+
+        public void insert(string item)
+        {
+            size++; // start with 1
+            h[size] = item;
+            string tempString;
+            int tempSize = size;
+
+            //Compare h[node] with h[node/2] then swap if h[node] is bigger and reduce size by factor of 2
+            while ((string.Compare(h[tempSize / 2], h[tempSize]) < 0) && tempSize >= 2)
+            {
+                tempString = h[tempSize / 2];
+                h[tempSize / 2] = h[tempSize];
+                h[tempSize] = tempString;
+
+                tempSize = tempSize /2;
+            }
+
+        }
+
+        public void extract()
+        {
+            string tempString;
+            int tempSize = 1;
+            //Swap
+            tempString = h[size];
+            h[size] = h[1];
+            h[1] = tempString;
+            size--;
+
+            while(tempSize*2 <= size)
+            {
+                // If child string to the left is greater than parent string and other child node then swap the || is for the case when the right child node is already extracted and greater than size
+                if ((string.Compare(h[tempSize * 2], h[tempSize]) > 0) && ((string.Compare(h[tempSize * 2], h[tempSize * 2 + 1]) > 0) || tempSize*2+1 > size))
+                {
+                    tempString = h[tempSize * 2];
+                    h[tempSize * 2] = h[tempSize];
+                    h[tempSize] = tempString;
+
+                    tempSize *= 2;
+                }
+                // if child node on the right is greater than parent then swap
+                else if ((string.Compare(h[tempSize * 2 + 1], h[tempSize]) > 0) && tempSize*2+1 <= size)
+                {
+                    tempString = h[tempSize * 2 + 1];
+                    h[tempSize * 2 + 1] = h[tempSize];
+                    h[tempSize] = tempString;
+
+                    tempSize = tempSize*2 + 1;
+                }
+                else // We're done and we didn't stop looking
+                {
+                    tempSize = size + 1;
+                }
+            }
+
+        }
+        // Call extract while we still have size
+        public void heapSort()
+        {
+           while (size >= 2)
+            {
+                extract();
+            }
+        }
+    }
+}

@@ -1,0 +1,62 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Union
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<LinkedSet> sets = new List<LinkedSet>();
+            LinkedSet temp;
+
+            Console.Write("How many sets: ");
+            int numSets = Convert.ToInt32(Console.ReadLine());
+            for (int i = 1; i<= numSets; i++)
+            {
+                Console.WriteLine("Enter set " + i + ": ");
+                temp = new LinkedSet();
+                for (int j = 1; j <= 5; j++)
+                    temp.addElement(Convert.ToInt32(Console.ReadLine()));
+
+                sets.Add(temp);
+            }
+
+            Console.WriteLine("Union by which elements?");
+            int first = Convert.ToInt32(Console.ReadLine());
+            int second = Convert.ToInt32(Console.ReadLine());
+            
+
+            List<int> toUnion = new List<int>();
+
+            for (int i = numSets-1; i >= 0; i--)
+            {
+                if (sets[i].theList.Contains(first) || sets[i].theList.Contains(second))
+                {
+                    toUnion.Add(i);
+                }
+            }
+
+            if (toUnion.Count > 1)
+            for (int i = toUnion.Count-1; i > 0; i-=2)
+            {
+                sets[toUnion[i]].union(sets[toUnion[i - 1]]);
+                    sets[toUnion[i - 1]].theList.Clear();
+            }
+
+            for(int i = 0; i <= sets.Count - 1; i++)
+            {
+                Console.WriteLine("\nNode " + i);
+
+                for (int j= 0; j<= sets[i].theList.Count - 1; j++)
+                    Console.WriteLine(sets[i].theList[j]);
+            }
+
+            Console.ReadLine();
+
+        }
+    }
+}

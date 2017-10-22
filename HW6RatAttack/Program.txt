@@ -1,0 +1,170 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+
+namespace RatAttack
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int scenarios = 1;
+            int d = 0;          //strength of bomb
+            int numRatPop = 0; // Number of locations
+            int xLoc = 0;           //location X
+            int yLoc = 0;           // location Y
+            int popSize;        // Size at location X & Y
+            int popDestroyed = 0; //Count of population destroyed by bomb
+            int maxDest = 0; //keeps track of max
+            int XMax = 0;   //max location X
+            int YMax = 0;   // max location Y
+            int[,] localizedGrid; // keep track of location range to check
+
+            int[,] grid = new int[1024, 1024];
+
+            while (scenarios >= 1)
+            {
+                scenarios = Convert.ToInt32(Console.ReadLine());//scenarios
+                d = Convert.ToInt32(Console.ReadLine());//bomb str
+                numRatPop = Convert.ToInt32(Console.ReadLine());//num Locations
+                localizedGrid = new int[numRatPop, 2];
+
+                for (int i = 0; i < numRatPop; i++)
+                {
+                    xLoc = Convert.ToInt32(Console.ReadLine());//X
+                    yLoc = Convert.ToInt32(Console.ReadLine());//Y
+                    popSize = Convert.ToInt32(Console.ReadLine());//size
+
+                    grid[xLoc, yLoc] = popSize; // insert into grid
+                    localizedGrid[i, 0] = xLoc;
+                    localizedGrid[i, 1] = yLoc;
+                }
+
+
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
+
+
+
+
+                /*
+                //brute force AND INCORRECT as it disregards certain diagonal spots
+                for (int x = 0; x < 1024; x++) 
+                {
+                    for (int y = 0; y < 1024; y++)
+                    {
+                        try
+                        {
+                            popDestroyed += grid[x, y];
+                            for (int i = 1; i <= d; i++)
+                            {
+                                popDestroyed += grid[x + d, y];
+                                popDestroyed += grid[x - d, y];
+                                popDestroyed += grid[x, y + d];
+                                popDestroyed += grid[x, y - d];
+                                popDestroyed += grid[x - d, y - d];
+                                popDestroyed += grid[x + d, y + d];
+                                popDestroyed += grid[x + d, y - d];
+                                popDestroyed += grid[x - d, y + d];
+                            }
+                            if (maxDest < popDestroyed)
+                            {
+                                maxDest = popDestroyed;
+                                XMax = x;
+                                YMax = y;
+                            }
+                            popDestroyed = 0;
+                        }
+                        catch (IndexOutOfRangeException e)
+                        {
+
+                        }
+                    }
+                }
+                */
+
+
+
+
+
+
+
+                //smarter, search the range of nodes that we entered rather than the whole grid
+                int localXStart = 1024;
+                int localXEnd = 0;
+                int localYStart = 1024;
+                int localYEnd = 0;
+                for (int i = 0; i < localizedGrid.Length / 2; i++) // find the minimum and maximum x and y for the nodes we inserted
+                {
+                    if (localizedGrid[i, 0] < localXStart) // find min x used
+                    {
+                        localXStart = localizedGrid[i, 0];
+                    }
+                    if (localizedGrid[i, 1] < localYStart) // find min Y used
+                    {
+                        localYStart = localizedGrid[i, 1];
+                    }
+                    if (localizedGrid[i, 0] > localXEnd) // find max x used
+                    {
+                        localXEnd = localizedGrid[i, 0];
+                    }
+                    if (localizedGrid[i, 1] > localYEnd) // find max x used
+                    {
+                        localYEnd = localizedGrid[i, 1];
+                    }
+                }
+
+
+
+                for (int x = localXStart; x < localXEnd; x++)
+                {
+                    for (int y = localYStart; y < localYEnd; y++)
+                    {
+                        try
+                        {// for each location add each destruction radius nodes
+                            //start at top left of destruction square and add
+                            //locations sequentially left to right, top to bottom
+                           for (int i = d; i >= -d; i--)//y
+                            {
+                                for (int j = -d; j <= d; j++)//x
+                                {
+                                    popDestroyed += grid[x + j, y + i];
+                                }
+                               
+                            }
+                            if (maxDest < popDestroyed)
+                            {
+                                maxDest = popDestroyed;
+                                XMax = x;
+                                YMax = y;
+                            }
+                            popDestroyed = 0;
+                        }
+                        catch (IndexOutOfRangeException e)
+                        {
+
+                        }
+                    }
+                }
+
+
+
+
+
+
+                timer.Stop();
+                Console.WriteLine("\n");
+                Console.WriteLine(timer.ElapsedMilliseconds + "ms");
+                Console.WriteLine("\n");
+                Console.Write(XMax + " " + YMax + " " + maxDest);
+                scenarios--;
+            }
+
+            Console.ReadLine();
+
+        }
+    }
+}

@@ -1,0 +1,40 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: lndmsvc - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Debug/lndmsvc.res" /d "_DEBUG" /d "_AFXDLL" "D:\lnd\lndmsvc.rc"" 
+Creating temporary file "C:\TEMP\RSP38.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /Fp"Debug/lndmsvc.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\lnd\lndmsvc.cpp"
+"D:\lnd\lndmsvcD.cpp"
+]
+Creating command line "cl.exe @C:\TEMP\RSP38.tmp" 
+Creating temporary file "C:\TEMP\RSP39.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /Fp"Debug/lndmsvc.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\lnd\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\TEMP\RSP39.tmp" 
+Creating command line "link.exe /nologo /subsystem:windows /incremental:yes /pdb:"Debug/lndmsvc.pdb" /debug /machine:I386 /out:"Debug/lndmsvc.exe" /pdbtype:sept  .\Debug\lndmsvc.obj .\Debug\lndmsvcD.obj .\Debug\StdAfx.obj .\Debug\lndmsvc.res .\lnddll32.lib "
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+lndmsvc.cpp
+lndmsvcD.cpp
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+lndmsvc.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

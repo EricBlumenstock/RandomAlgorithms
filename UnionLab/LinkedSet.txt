@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Union
+{
+    class LinkedSet
+    {
+        private int head;
+        private int tail;
+        public List<int> theList;
+
+        public LinkedSet()
+        {
+            head = -1;
+            tail = 0;
+            theList = new List<int>();
+        }
+
+        public int getHead()
+        {
+            return head;
+        }
+
+        public int getHeadElement()
+        {
+            head++;
+            if (head < theList.Count)
+                return theList[head];
+            else
+                return -1;
+        }
+
+        public int getTail()
+        {
+            return head;
+        }
+
+        public int getTailElement()
+        {
+            return theList[tail];
+        }
+
+        public void addElement(int ele)
+        {
+            theList.Add(ele);
+            tail = theList.Count - 1;
+        }
+
+        public void union(LinkedSet toUnion)
+        {
+            int temp = toUnion.getHeadElement();
+            while (temp != -1)
+            {
+                theList.Add(temp);
+                temp = toUnion.getHeadElement();
+            }
+               
+            tail = theList.Count - 1;
+        }
+
+        public bool union(int eUno, int eDos, LinkedSet toUnion)
+        {
+            if (theList.Contains(eUno) && toUnion.theList.Contains(eDos))
+            {
+                int temp = toUnion.getHeadElement();
+                while (temp != -1)
+                {
+                    theList.Add(temp);
+                    temp = toUnion.getHeadElement();
+                }
+
+                tail = theList.Count - 1;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+            
+        }
+
+        public int getElementAtLocation(int index)
+        {
+            return theList[index];
+        }
+
+        
+    }
+}
